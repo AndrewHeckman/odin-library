@@ -6,6 +6,8 @@ const submitButton = document.querySelector("#form-submit");
 const closeButton = document.querySelector("#form-close");
 const dialogButton = document.querySelector("#new-book-button");
 
+let counter = 0;
+
 function Book(title, author, numPages, read) {
   this.title = title;
   this.author = author;
@@ -22,21 +24,25 @@ function Book(title, author, numPages, read) {
     const author = document.createElement("td");
     const pages = document.createElement("td");
     const read = document.createElement("td");
+    const readButton = document.createElement("button");
 
     title.textContent = this.title;
     author.textContent = this.author;
     pages.textContent = this.numPages.toString();
     if (this.read) {
-      read.textContent = "read";
+      readButton.textContent = "Read";
     } else {
-      read.textContent = "unread";
+      readButton.textContent = "Unread";
     }
 
+    readButton.addEventListener("click", toggleRead);
+    read.appendChild(readButton)
     row.appendChild(title);
     row.appendChild(author);
     row.appendChild(pages);
     row.appendChild(read);
 
+    row.setAttribute("data-index", counter)
     return row;
   }
 }
@@ -44,6 +50,7 @@ function Book(title, author, numPages, read) {
 function addBookToLibrary(book) {
   myLibrary.push(book);
   table.appendChild(book.createRow());
+  counter++;
 }
 
 function displayLibrary() {
@@ -59,6 +66,25 @@ function handleSubmit() {
   const read = document.querySelector("#form-read").checked;
 
   addBookToLibrary(new Book(title, author, pages, read));
+}
+
+function toggleRead(event) {
+  const button = event.target;
+  const row = button.parentElement.parentElement.getAttribute("data-index");
+  const index = parseInt(row);
+
+  if (myLibrary[index].read) {
+    button.textContent = "Unread";
+    myLibrary[index].read = false;
+  }
+  else {
+    button.textContent = "Read";
+    myLibrary[index].read = true;
+  }
+}
+
+function deleteBook(event) {
+
 }
 
 submitButton.addEventListener("click", function (event){
