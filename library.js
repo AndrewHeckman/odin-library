@@ -6,8 +6,6 @@ const submitButton = document.querySelector("#form-submit");
 const closeButton = document.querySelector("#form-close");
 const dialogButton = document.querySelector("#new-book-button");
 
-let counter = 0;
-
 function Book(title, author, numPages, read) {
   this.title = title;
   this.author = author;
@@ -25,6 +23,8 @@ function Book(title, author, numPages, read) {
     const pages = document.createElement("td");
     const read = document.createElement("td");
     const readButton = document.createElement("button");
+    const deleteBox = document.createElement("td");
+    const deleteButton = document.createElement("button")
 
     title.textContent = this.title;
     author.textContent = this.author;
@@ -34,23 +34,26 @@ function Book(title, author, numPages, read) {
     } else {
       readButton.textContent = "Unread";
     }
+    deleteButton.textContent = "Delete";
 
     readButton.addEventListener("click", toggleRead);
     read.appendChild(readButton)
+    deleteButton.addEventListener("click", deleteBook);
+    deleteBox.appendChild(deleteButton);
     row.appendChild(title);
     row.appendChild(author);
     row.appendChild(pages);
     row.appendChild(read);
+    row.appendChild(deleteBox);
 
-    row.setAttribute("data-index", counter)
+    row.setAttribute("data-index", myLibrary.length);
     return row;
   }
 }
 
 function addBookToLibrary(book) {
-  myLibrary.push(book);
   table.appendChild(book.createRow());
-  counter++;
+  myLibrary.push(book);
 }
 
 function displayLibrary() {
@@ -70,8 +73,7 @@ function handleSubmit() {
 
 function toggleRead(event) {
   const button = event.target;
-  const row = button.parentElement.parentElement.getAttribute("data-index");
-  const index = parseInt(row);
+  const index = parseInt(button.parentElement.parentElement.getAttribute("data-index"));
 
   if (myLibrary[index].read) {
     button.textContent = "Unread";
@@ -84,7 +86,16 @@ function toggleRead(event) {
 }
 
 function deleteBook(event) {
+  const button = event.target;
+  const index = parseInt(button.parentElement.parentElement.getAttribute("data-index"));
+  const deleteRow = document.querySelector(`[data-index="${index}"]`);
 
+  myLibrary.splice(index, 1);
+  deleteRow.remove();
+  for (let i = index; i < myLibrary.length; i++) {
+    const row = document.querySelector(`[data-index="${i+1}"]`);
+    row.setAttribute("data-index", i);
+  }
 }
 
 submitButton.addEventListener("click", function (event){
@@ -99,8 +110,3 @@ closeButton.addEventListener("click", function () {
 dialogButton.addEventListener("click", function () {
   dialog.showModal();
 })
-
-addBookToLibrary(new Book("title1", "author1", 1, true));
-addBookToLibrary(new Book("title2", "author2", 2, false));
-
-displayLibrary();
