@@ -6,17 +6,19 @@ const submitButton = document.querySelector("#form-submit");
 const closeButton = document.querySelector("#form-close");
 const dialogButton = document.querySelector("#new-book-button");
 
-function Book(title, author, numPages, read) {
-  this.title = title;
-  this.author = author;
-  this.numPages = numPages;
-  this.read = read;
-
-  this.info = function () {
-    return `${this.title} by ${this.author}, ${numPages} page${numPages > 1 ? "s" :""}, ${read ? "read" : "not read yet"}.`;
+class Book {
+  constructor(title, author, numPages, read) {
+    this.title = title;
+    this.author = author;
+    this.numPages = numPages;
+    this.read = read;
   }
 
-  this.createRow = function() {
+  info() {
+    return `${this.title} by ${this.author}, ${numPages} page${numPages > 1 ? "s" : ""}, ${read ? "read" : "not read yet"}.`;
+  }
+
+  createRow() {
     const row = document.createElement("tr");
     const title = document.createElement("td");
     const author = document.createElement("td");
@@ -24,7 +26,7 @@ function Book(title, author, numPages, read) {
     const read = document.createElement("td");
     const readButton = document.createElement("button");
     const deleteBox = document.createElement("td");
-    const deleteButton = document.createElement("button")
+    const deleteButton = document.createElement("button");
 
     title.textContent = this.title;
     author.textContent = this.author;
@@ -37,7 +39,7 @@ function Book(title, author, numPages, read) {
     deleteButton.textContent = "Delete";
 
     readButton.addEventListener("click", toggleRead);
-    read.appendChild(readButton)
+    read.appendChild(readButton);
     deleteButton.addEventListener("click", deleteBook);
     deleteBox.appendChild(deleteButton);
     row.appendChild(title);
@@ -50,6 +52,7 @@ function Book(title, author, numPages, read) {
     return row;
   }
 }
+
 
 function addBookToLibrary(book) {
   table.appendChild(book.createRow());
@@ -93,12 +96,12 @@ function deleteBook(event) {
   myLibrary.splice(index, 1);
   deleteRow.remove();
   for (let i = index; i < myLibrary.length; i++) {
-    const row = document.querySelector(`[data-index="${i+1}"]`);
+    const row = document.querySelector(`[data-index="${i + 1}"]`);
     row.setAttribute("data-index", i);
   }
 }
 
-submitButton.addEventListener("click", function (event){
+submitButton.addEventListener("click", function (event) {
   event.preventDefault();
   handleSubmit();
 });
