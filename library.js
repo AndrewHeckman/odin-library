@@ -71,6 +71,11 @@ function handleSubmit() {
   const pages = parseInt(document.querySelector("#form-pages").value);
   const read = document.querySelector("#form-read").checked;
 
+  if (title === "" || author === "" || isNaN(pages)) {
+    alert("Please fill out all fields.");
+    return;
+  }
+
   addBookToLibrary(new Book(title, author, pages, read));
 }
 
